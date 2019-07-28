@@ -6,8 +6,7 @@ const PostSchema = ({
    content: {type: String},
    imageURL: {type: String},
    creator: {type: mongoose.Schema.Types.ObjectId, ref: User},
-   createdAt: {type: Date, default: Date.now()},
-   updatedAt: {type: Date, default: Date.now()}
-});
+},{ timestamps: true }
+);
 
 module.exports = Post = mongoose.model('post', PostSchema);
