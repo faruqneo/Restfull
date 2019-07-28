@@ -63,13 +63,18 @@ module.exports = {
          userId: user._id.toString(),
          email: user.email,
          name: user.name
-      }, 'somesuperscrectkey', {expiresIn: '1h'});
+      }, 'somesupersecretsecret', {expiresIn: '1h'});
       //console.log(token)
       return { token, userId: user._id.toString() }
    },
 
    createPost: async({ postInput }, req) => {
-      console.log(postInput);
+      if(!req.isAuth) {
+         const error = new Error('Not authenticated!');
+         error.code = 401;
+         throw error;
+      }
+      //console.log(postInput);
       const title = postInput.title;
       const content = postInput.content;
       const imageURL = postInput.imageURL;
@@ -92,13 +97,23 @@ module.exports = {
          throw error;
       }
      
+      const user = await User.findById(req.userId);
+      if(!user)
+      {
+         const error = new Error('Invalid user.');
+         error.code = 401;
+         throw error;
+      }
+
       const post = new Post({
          title,
          content,
-         imageURL
+         imageURL,
+         creator: user
       });
 
       const createdPost = await post.save();
+      user.posts.push(createdPost);
       // Add post to users' post
       return { 
          ...createdPost._doc,
