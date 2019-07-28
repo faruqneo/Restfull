@@ -85,7 +85,7 @@ class App extends Component {
           isAuth: true,
           token: resData.data.data.login.token,
           authLoading: false,
-          userId: resData.userId
+          userId: resData.data.data.login.userId
         });
         localStorage.setItem('token', resData.data.data.login.token);
         localStorage.setItem('userId', resData.data.data.login.userId);
